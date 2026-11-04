@@ -18,6 +18,8 @@ The add-on revision after the dash in `version` (`1.37.5-2`) is for changes to t
 
 `.github/scripts/bump-vaultwarden.sh` runs every 6 hours. It bumps the pin to the latest upstream release once the GitHub release and the image push are both two days old. With auto-update on, Supervisor waits one more day, takes a backup, and installs it. A release reaches the vault three to four days after upstream ships it.
 
+Each bump copies the upstream release notes into `vaultwarden/CHANGELOG.md`, which Home Assistant shows on the update screen. Add an entry by hand for revision bumps. Changelog edits alone don't need a new `version`, since Supervisor reads the file from the repo.
+
 The delay is there so a bad or compromised release has time to be noticed and pulled first. The script also guards against:
 
 - **Re-pushed tags.** The Dockerfile pins the digest, so pushing a different image under the same tag changes nothing here. The script won't adopt a tag it has seen before at another digest.

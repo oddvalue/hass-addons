@@ -1,0 +1,88 @@
+## 1.37.5-2
+
+Pins the image by digest (`sha256:4fe17f415f90087377d37c755e0ea3cf189dcc6794e49cdd2a9adbb4937d9e1f`). Vaultwarden is the same as in 1.37.5-1.
+
+## 1.37.5-1
+
+Vaultwarden [1.37.5](https://github.com/dani-garcia/vaultwarden/releases/tag/1.37.5).
+
+### Security Fixes
+This release contains security fixes for the following advisories. We strongly advise updating as soon as possible.
+- Website icons [[GHSA-x9cq-f669-vrr4]](https://github.com/dani-garcia/vaultwarden/security/advisories/GHSA-x9cq-f669-vrr4) (**Medium**, 5.3)
+- Emergency access [[GHSA-9pjj-f9g5-3x4c]](https://github.com/dani-garcia/vaultwarden/security/advisories/GHSA-9pjj-f9g5-3x4c) (**Medium**, 4.3)
+
+These are private for now, pending CVE assignment and publishing at a later date.
+
+### Note
+This update is required for web vault 2026.7.1+ to turn two-step login methods on or off, and for 2026.9.0+ to take over an account through emergency access. Please update before reporting any issues with them.
+
+### Upgrade notes
+- **Web vault:** the bundled web vault is now v2026.10.1. If you serve your own web vault older than v2026.7.1, you might have compatibility issues.
+- **Configuration:** invalid values now stop startup with an error. Numeric options have tighter types, so negative or too large values are rejected, for example above 65535 for `LOGIN_RATELIMIT_MAX_BURST`, `TRASH_AUTO_DELETE_DAYS`, `EVENTS_DAYS_RETAIN` or `SMTP_TIMEOUT`, or above 255 for `EMAIL_ATTEMPTS_LIMIT`. The rate limit `*_SECONDS` and `*_MAX_BURST` options, `DATABASE_TIMEOUT` and `DATABASE_IDLE_TIMEOUT` must be at least 1, `DATABASE_MIN_CONNS` can't be larger than `DATABASE_MAX_CONNS`, and `DUO_CONTEXT_PURGE_SCHEDULE` and `PURGE_INCOMPLETE_SSO_AUTH` must be empty or a valid cron expression.
+
+### What's Changed
+* Close WebSocket connections that stop responding by @Cassian433 in https://github.com/dani-garcia/vaultwarden/pull/7807
+* Validate the Duo and SSO purge schedules on startup by @NotAFlightRisk in https://github.com/dani-garcia/vaultwarden/pull/7819
+* docs: fix "runnning" typo in playwright README by @ump45nose in https://github.com/dani-garcia/vaultwarden/pull/7787
+* docs: fix Playwright test env link by @dajiaohuang in https://github.com/dani-garcia/vaultwarden/pull/7739
+* Fix group import to update groups on data change by @Jogius in https://github.com/dani-garcia/vaultwarden/pull/7671
+* [Web 2026.9.0] Support new Emergency Access password payload by @tom27052006 in https://github.com/dani-garcia/vaultwarden/pull/7746
+* [Web 2026.9.0] Support new account recovery password payload by @tom27052006 in https://github.com/dani-garcia/vaultwarden/pull/7747
+* [web-v2026.7.1] 2FA userVerificationToken for Authenticator, Email and Duo by @Timshel in https://github.com/dani-garcia/vaultwarden/pull/7563
+* Fix email 2FA for SSO logins on iOS and Android by @dani-garcia in https://github.com/dani-garcia/vaultwarden/pull/7827
+* Update web-vault to v2026.8.0 by @dani-garcia in https://github.com/dani-garcia/vaultwarden/pull/7828
+* Add revision_date to org policies by @will-lottkowitz-prism in https://github.com/dani-garcia/vaultwarden/pull/7571
+* Add Windows desktop Autotype feature flags and policy support by @tom27052006 in https://github.com/dani-garcia/vaultwarden/pull/7808
+* Add `biometrics-sdk-ipc` feature flag (closes #7812) by @cad0p in https://github.com/dani-garcia/vaultwarden/pull/7813
+* Delete auth requests when deleting a user by @Cassian433 in https://github.com/dani-garcia/vaultwarden/pull/7837
+* Add unsupported riscv64 architecture by @BlackDex in https://github.com/dani-garcia/vaultwarden/pull/7859
+* api/icons: fix typos in the minimum PNG size comment by @ump45nose in https://github.com/dani-garcia/vaultwarden/pull/7867
+* docs: fix connect-src description grammar by @ump45nose in https://github.com/dani-garcia/vaultwarden/pull/7866
+* Update dependencies by @BlackDex in https://github.com/dani-garcia/vaultwarden/pull/7882
+* Misc fixes regarding jobs and config by @BlackDex in https://github.com/dani-garcia/vaultwarden/pull/7858
+* Send null org key for unconfirmed members in sync by @minchinweb in https://github.com/dani-garcia/vaultwarden/pull/7850
+* Return stored manage flag for groups in collections/details by @deltatree in https://github.com/dani-garcia/vaultwarden/pull/7795
+* Fix bulk cipher share response for SDK clients by @tom27052006 in https://github.com/dani-garcia/vaultwarden/pull/7831
+* Upgrade to Rocket v0.5.2 by @BlackDex in https://github.com/dani-garcia/vaultwarden/pull/7890
+* Fix typo in vaultwarden.env by @Arthurmeade12 in https://github.com/dani-garcia/vaultwarden/pull/7864
+* Remove expired cookies from the icon cookie jar by @dani-garcia in https://github.com/dani-garcia/vaultwarden/pull/7905
+* fix(attachments): enforce quota at v2 metadata reservation by @lucavb in https://github.com/dani-garcia/vaultwarden/pull/7450
+* Align cipher org checks & attachment notification with upstream by @dani-garcia in https://github.com/dani-garcia/vaultwarden/pull/7906
+* Document two feature flags in .env.template by @MichaelMuClaude in https://github.com/dani-garcia/vaultwarden/pull/7841
+* Fix push device unregistration endpoint by @xkmttc in https://github.com/dani-garcia/vaultwarden/pull/7891
+* Don't return internal error details in bulk member responses; gate SSO token logging by @tauanbinato in https://github.com/dani-garcia/vaultwarden/pull/7777
+* [Web 2026.9.0] Add Fill Assist + Policy support by @tom27052006 in https://github.com/dani-garcia/vaultwarden/pull/7791
+* Add registration email verification clicked endpoint by @tom27052006 in https://github.com/dani-garcia/vaultwarden/pull/7790
+* Make 2FA remember duration configurable by @tom27052006 in https://github.com/dani-garcia/vaultwarden/pull/7421
+* Bump user revision once for bulk cipher move by @MichaelMuClaude in https://github.com/dani-garcia/vaultwarden/pull/7840
+* Send logout notification when deleting a user by @Cassian433 in https://github.com/dani-garcia/vaultwarden/pull/7839
+* Two small fixes for upstream parity by @dani-garcia in https://github.com/dani-garcia/vaultwarden/pull/7918
+* Add missing HTTP auth and policy revocation audit events by @tom27052006 in https://github.com/dani-garcia/vaultwarden/pull/7919
+* Clippy fixes, crate and web-vault updates by @BlackDex in https://github.com/dani-garcia/vaultwarden/pull/7920
+* Escape request values in log messages by @dani-garcia in https://github.com/dani-garcia/vaultwarden/pull/7921
+
+### New Contributors
+* @Cassian433 made their first contribution in https://github.com/dani-garcia/vaultwarden/pull/7807
+* @NotAFlightRisk made their first contribution in https://github.com/dani-garcia/vaultwarden/pull/7819
+* @ump45nose made their first contribution in https://github.com/dani-garcia/vaultwarden/pull/7787
+* @dajiaohuang made their first contribution in https://github.com/dani-garcia/vaultwarden/pull/7739
+* @Jogius made their first contribution in https://github.com/dani-garcia/vaultwarden/pull/7671
+* @will-lottkowitz-prism made their first contribution in https://github.com/dani-garcia/vaultwarden/pull/7571
+* @minchinweb made their first contribution in https://github.com/dani-garcia/vaultwarden/pull/7850
+* @deltatree made their first contribution in https://github.com/dani-garcia/vaultwarden/pull/7795
+* @Arthurmeade12 made their first contribution in https://github.com/dani-garcia/vaultwarden/pull/7864
+* @lucavb made their first contribution in https://github.com/dani-garcia/vaultwarden/pull/7450
+* @MichaelMuClaude made their first contribution in https://github.com/dani-garcia/vaultwarden/pull/7841
+* @xkmttc made their first contribution in https://github.com/dani-garcia/vaultwarden/pull/7891
+* @tauanbinato made their first contribution in https://github.com/dani-garcia/vaultwarden/pull/7777
+
+**Full Changelog**: https://github.com/dani-garcia/vaultwarden/compare/1.37.4...1.37.5
+
+
+## 1.37.4-2
+
+Drops the `share` mapping that was only needed to move the vault in.
+
+## 1.37.4-1
+
+First release from this repository, on Vaultwarden [1.37.4](https://github.com/dani-garcia/vaultwarden/releases/tag/1.37.4).
