@@ -19,3 +19,5 @@ The add-on revision after the dash in `version` (`1.37.4-1`) is for changes to t
 ### Moving data in
 
 If `/data` has no database at startup, the add-on copies one from `/share/vaultwarden`, checks the md5, and refuses to start if either step fails. It never starts on an empty vault.
+
+The `share` mapping is off once the vault has moved in. To migrate again, add it back to `map` in `config.yaml`, put the data in `/share/vaultwarden` without `options.json` (the copy would overwrite the add-on's own), start the add-on, then remove the mapping and the staged copy.
