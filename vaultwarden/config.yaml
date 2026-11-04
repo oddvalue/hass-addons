@@ -1,0 +1,30 @@
+name: Vaultwarden
+version: "1.37.4-1"
+slug: vaultwarden
+description: Vaultwarden on the official upstream image, bumped automatically when upstream releases.
+url: https://github.com/oddvalue/hass-addons/tree/main/vaultwarden
+arch:
+  - amd64
+startup: application
+boot: auto
+init: false
+host_network: false
+backup: cold
+ports:
+  7277/tcp: 7277
+ports_description:
+  7277/tcp: Vaultwarden web interface
+webui: "https://[HOST]:[PORT:7277]"
+map:
+  - type: ssl
+    read_only: true
+  - type: share
+    read_only: false
+environment:
+  ROCKET_PORT: "7277"
+  ROCKET_TLS: '{certs="/ssl/fullchain.pem",key="/ssl/privkey.pem"}'
+  SIGNUPS_ALLOWED: "false"
+options:
+  domain: ""
+schema:
+  domain: url
