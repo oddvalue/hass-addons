@@ -1,5 +1,5 @@
 name: Vaultwarden
-version: "1.37.5-1"
+version: "1.37.5-2"
 slug: vaultwarden
 description: Vaultwarden on the official upstream image, bumped automatically when upstream releases.
 url: https://github.com/oddvalue/hass-addons/tree/main/vaultwarden

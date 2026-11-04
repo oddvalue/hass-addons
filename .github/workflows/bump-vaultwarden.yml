@@ -1,68 +1,32 @@
 name: Bump Vaultwarden
 
 on:
+  # Every 6 hours so a pulled release or re-pushed image is caught inside the
+  # rollback window, before Supervisor's one-day hold ends. Bumps still wait
+  # out the soak.
   schedule:
-    - cron: "17 6 * * *"
+    - cron: "17 */6 * * *"
   workflow_dispatch:
 
 permissions:
   contents: write
 
-env:
-  # Days a release must be public before we adopt it. Supervisor waits one
-  # more day after it sees the new version before auto-updating.
-  SOAK_DAYS: 2
-
 jobs:
   bump:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          # Full history, to look up earlier pins and the last bump commit.
+          fetch-depth: 0
 
-      - name: Check upstream release
-        id: release
+      - name: Check pin and bump
+        run: .github/scripts/bump-vaultwarden.sh
         env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          release=$(gh api repos/dani-garcia/vaultwarden/releases/latest)
-          tag=$(jq -r .tag_name <<<"$release")
-          published=$(jq -r .published_at <<<"$release")
-          current=$(sed -n 's|^FROM vaultwarden/server:||p' vaultwarden/Dockerfile)
-          echo "current $current, latest $tag published $published"
-
-          if ! [[ "$tag" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-            echo "Unexpected tag format: $tag"
-            exit 1
-          fi
-          if [ "$tag" = "$current" ]; then
-            echo "Up to date"
-            exit 0
-          fi
-          if [ "$(printf '%s\n%s\n' "$current" "$tag" | sort -V | tail -n1)" != "$tag" ]; then
-            echo "$tag is older than $current, ignoring"
-            exit 0
-          fi
-
-          age=$(( ($(date +%s) - $(date -d "$published" +%s)) / 86400 ))
-          if [ "$age" -lt "$SOAK_DAYS" ]; then
-            echo "$tag is $age days old, waiting for $SOAK_DAYS"
-            exit 0
-          fi
-          if ! curl -fsS -o /dev/null "https://hub.docker.com/v2/repositories/vaultwarden/server/tags/$tag"; then
-            echo "Image vaultwarden/server:$tag is not on Docker Hub yet"
-            exit 0
-          fi
-
-          echo "tag=$tag" >> "$GITHUB_OUTPUT"
-
-      - name: Bump add-on
-        if: steps.release.outputs.tag
-        env:
-          TAG: ${{ steps.release.outputs.tag }}
-        run: |
-          sed -i "s|^FROM vaultwarden/server:.*|FROM vaultwarden/server:$TAG|" vaultwarden/Dockerfile
-          sed -i "s|^version: .*|version: \"$TAG-1\"|" vaultwarden/config.yaml
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git commit -am "Bump Vaultwarden to $TAG"
-          git push
+          GITHUB_TOKEN: ${{ github.token }}
+          # Days both the GitHub release and the image push must be public
+          # before we adopt them. Supervisor waits one more day.
+          SOAK_DAYS: 2
+          # A bump younger than this can't have been installed yet, so it is
+          # safe to roll back.
+          ROLLBACK_HOURS: 24
